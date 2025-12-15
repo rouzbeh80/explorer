@@ -1,0 +1,62 @@
+name: Build Windows Executable
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:  # Allows manual trigger from Actions tab
+
+jobs:
+  build:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Setup MinGW
+      uses: msys2/setup-msys2@v2
+      with:
+        msystem: MINGW64
+        install: mingw-w64-x86_64-gcc
+    
+    - name: Build Windows executable
+      shell: msys2 {0}
+      run: |
+        gcc step1.c -o server.exe -lws2_32
+    
+    - name: Upload executable as artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: windows-server
+        path: server.exe
+        
+  build-multi-platform:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        include:
+          - os: ubuntu-latest
+            output: server-linux
+            build_cmd: gcc step1.c -o server-linux
+          - os: windows-latest
+            output: server.exe
+            build_cmd: gcc step1.c -o server.exe -lws2_32
+          - os: macos-latest
+            output: server-macos
+            build_cmd: gcc step1.c -o server-macos
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Build executable
+      run: ${{ matrix.build_cmd }}
+    
+    - name: Upload executable
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ matrix.output }}
+        path: ${{ matrix.output }}
