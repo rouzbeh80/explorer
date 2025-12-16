@@ -13,7 +13,7 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     
     - name: Setup MinGW
       uses: msys2/setup-msys2@v2
@@ -27,7 +27,7 @@ jobs:
         gcc step1.c -o server.exe -lws2_32
     
     - name: Upload executable as artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: windows-server
         path: server.exe
@@ -50,13 +50,13 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     
     - name: Build executable
       run: ${{ matrix.build_cmd }}
     
     - name: Upload executable
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: ${{ matrix.output }}
         path: ${{ matrix.output }}
