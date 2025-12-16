@@ -24,7 +24,7 @@ jobs:
     - name: Build Windows executable
       shell: msys2 {0}
       run: |
-        gcc step1.c -o server.exe -lws2_32
+        gcc main.c -o server.exe -lws2_32
     
     - name: Upload executable as artifact
       uses: actions/upload-artifact@v4
@@ -40,13 +40,13 @@ jobs:
         include:
           - os: ubuntu-latest
             output: server-linux
-            build_cmd: gcc step1.c -o server-linux
+            build_cmd: gcc main.c -o server-linux
           - os: windows-latest
             output: server.exe
-            build_cmd: gcc step1.c -o server.exe -lws2_32
+            build_cmd: gcc main.c -o server.exe -lws2_32
           - os: macos-latest
             output: server-macos
-            build_cmd: gcc step1.c -o server-macos
+            build_cmd: gcc main.c -o server-macos
     
     steps:
     - name: Checkout code
